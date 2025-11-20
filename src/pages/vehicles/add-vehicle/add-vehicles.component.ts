@@ -12,7 +12,7 @@ import { CursoService } from '../../../services/curso.service';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 @Component({
-  selector: 'app-add-aluno',
+  selector: 'app-add-vehicles',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -22,10 +22,10 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     NgxMaskDirective
   ],
   providers: [AlunosService, CursoService, provideNgxMask()],
-  templateUrl: './add-aluno.component.html',
-  styleUrl: './add-aluno.component.scss'
+  templateUrl: './add-vehicles.component.html',
+  styleUrl: './add-vehicles.component.scss'
 })
-export class AddAlunoComponent {
+export class AddVehiclesComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,

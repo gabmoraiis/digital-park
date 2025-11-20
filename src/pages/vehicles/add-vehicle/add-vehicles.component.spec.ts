@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddAlunoComponent } from './add-aluno.component';
+import { AddVehiclesComponent } from './add-vehicles.component';
 
-describe('AddAlunoComponent', () => {
-  let component: AddAlunoComponent;
-  let fixture: ComponentFixture<AddAlunoComponent>;
+describe('AddVehiclesComponent', () => {
+  let component: AddVehiclesComponent;
+  let fixture: ComponentFixture<AddVehiclesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddAlunoComponent]
+      imports: [AddVehiclesComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AddAlunoComponent);
+    fixture = TestBed.createComponent(AddVehiclesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

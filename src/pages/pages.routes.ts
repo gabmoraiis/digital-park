@@ -1,17 +1,15 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { CoursesComponent } from './courses/courses.component';
+import { VacanciesComponent } from './vacancies/vacancies.component';
 import { PagesComponent } from './pages.component';
-import { StudentsComponent } from './students/students.component';
-import { DisciplinesComponent } from './disciplines/disciplines.component';
+import { VehiclesComponent } from './vehicles/vehicles.component';
 
 export const pagesRoutes: Routes = [
     { path: '', component: PagesComponent,
         children: [
           { path: 'dashboard', component: DashboardComponent },
-          { path: 'courses', component: CoursesComponent },
-          { path: 'students', component: StudentsComponent },
-          { path: 'disciplines', component: DisciplinesComponent },
+          { path: 'vacancies', component: VacanciesComponent },
+          { path: 'vehicles', component: VehiclesComponent },
         ],
       },
       { path: '**', redirectTo: '' },
