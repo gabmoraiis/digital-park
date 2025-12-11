@@ -11,6 +11,7 @@ import { TableListComponent } from '../../components/table-list/table-list.compo
 import { HttpClientModule } from '@angular/common/http';
 import { OpenModalConfirmService } from '../../services/open-modal-confirm.service';
 import { VagasService } from '../../services/vagas.service';
+import { ModalSelectCarComponent } from '../../components/modal-select-car/modal-select-car.component';
 
 @Component({
   selector: 'app-vacancies',
@@ -41,6 +42,7 @@ export class VacanciesComponent implements OnInit {
   enterpriseName: string = '';
   id: string = '';
   tableMode: boolean = false;
+  selectedPlate: string = '';
   isLoading: boolean = false;
 
   vacancies: any[] = [
@@ -233,56 +235,55 @@ export class VacanciesComponent implements OnInit {
   }
 
   openConfirmation(event: any): void {
-    this.openModalConfirmService.openModalConfirm({
-      text: `Tem certeza que deseja alterar o status dessa vaga de ${event.status} para ${event.status == 'OCUPADA' ? 'Disponível' : 'Ocupado'}?`,
-      subText: 'O registro da vaga ficará salvo e não poderá ser alterado.',
-      type: 'danger',
-    }).subscribe(confirm => {
-      if (confirm) {
-        this.isLoading = true;
-        if (event.status == 'OCUPADA') {
-          this.vagasService.desocuparVaga(this.id, event.id_vaga).subscribe({
-            next: (res: any) => {
-              this.isLoading = false;
-              this.openModalConfirmService.openModalConfirm({
-                text: 'Status da vaga alterado com sucesso!',
-                hideCancelButton: true,
-                type: 'success'
-              }).subscribe(() => {
-                window.location.reload();
-              });
-            }, error: (error: any) => {
-              this.isLoading = false;
-              this.openModalConfirmService.openModalConfirm({
-                text: 'Erro ao alterar status da vaga. Tente novamente mais tarde.',
-                hideCancelButton: true,
-                type: 'error'
-              });
-            }
-          });
-        } else {
-          this.vagasService.ocuparVaga(this.id, event.id_vaga, { placa: event.plate }).subscribe({
-            next: (res: any) => {
-              this.isLoading = false;
-              this.openModalConfirmService.openModalConfirm({
-                text: 'Status da vaga alterado com sucesso!',
-                hideCancelButton: true,
-                type: 'success'
-              }).subscribe(() => {
-                window.location.reload();
-              });
-            }, error: (error: any) => {
-              this.isLoading = false;
-              this.openModalConfirmService.openModalConfirm({
-                text: 'Erro ao alterar status da vaga. Tente novamente mais tarde.',
-                hideCancelButton: true,
-                type: 'error'
-              });
-            }
-          });
-        }
+    const ref = this.dialog.open(ModalSelectCarComponent);
+    ref.afterClosed().subscribe((plate: string | undefined) => {
+      // se o modal foi fechado sem seleção, não faz nada
+      if (!plate) return;
+      this.selectedPlate = plate;
+      this.isLoading = true;
+
+      if (event.status === 'OCUPADA') {
+        // desocupar vaga (não precisa da placa)
+        this.vagasService.desocuparVaga(this.id, event.id_vaga).subscribe({
+          next: () => {
+            this.isLoading = false;
+            this.openModalConfirmService.openModalConfirm({
+              text: 'Status da vaga alterado com sucesso!',
+              hideCancelButton: true,
+              type: 'success'
+            }).subscribe(() => window.location.reload());
+          },
+          error: () => {
+            this.isLoading = false;
+            this.openModalConfirmService.openModalConfirm({
+              text: 'Erro ao alterar status da vaga. Tente novamente mais tarde.',
+              hideCancelButton: true,
+              type: 'error'
+            });
+          }
+        });
+      } else {
+        // ocupar vaga usando a placa retornada pelo modal
+        this.vagasService.ocuparVaga(this.id, event.id_vaga, { placa: this.selectedPlate }).subscribe({
+          next: () => {
+            this.isLoading = false;
+            this.openModalConfirmService.openModalConfirm({
+              text: 'Status da vaga alterado com sucesso!',
+              hideCancelButton: true,
+              type: 'success'
+            }).subscribe(() => window.location.reload());
+          },
+          error: () => {
+            this.isLoading = false;
+            this.openModalConfirmService.openModalConfirm({
+              text: 'Erro ao alterar status da vaga. Tente novamente mais tarde.',
+              hideCancelButton: true,
+              type: 'error'
+            });
+          }
+        });
       }
-    })
+    });
   }
 
   changeViewMode(mode: 'frame' | 'table'): void {
