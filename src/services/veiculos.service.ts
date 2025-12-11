@@ -8,24 +8,35 @@ import { Veículos } from '../interface/veículos';
 })
 export class VeiculosService {
   private apiUrl = 'http://localhost:3333/veiculos';
+  storage: Storage;
+  token: string = '';
+  httpOptions: any = {};
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.storage = window.sessionStorage;
+    this.token = this.storage.getItem('token')!;
+    this.httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: this.token,
+      }),
+    }
+  }
 
-  listarVeiculos(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  listarVeiculos(): Observable<any> {
+    return this.http.get<any[]>(this.apiUrl, this.httpOptions);
   }
 
   cadastrarVeiculo(veiculo: Veículos): Observable<any> {
-    return this.http.post<any>(this.apiUrl, veiculo);
+    return this.http.post<any>(this.apiUrl, veiculo, this.httpOptions);
   }
 
   editarVeiculo(id: number, veiculo: Veículos): Observable<any> {
     const url = `${this.apiUrl}/${id}`;
-    return this.http.put<any>(url, veiculo);
+    return this.http.put<any>(url, veiculo, this.httpOptions);
   }
 
-  excluirVeiculo(id: number): Observable<void> {
+  excluirVeiculo(id: number): Observable<any> {
     const url = `${this.apiUrl}/${id}`;
-    return this.http.delete<void>(url);
+    return this.http.delete<any>(url, this.httpOptions);
   }
 }
