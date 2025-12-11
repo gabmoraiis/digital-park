@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, inject, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -10,19 +10,7 @@ import { SpinnerComponent } from '../../components/spinner/spinner.component';
 import { TableListComponent } from '../../components/table-list/table-list.component';
 import { HttpClientModule } from '@angular/common/http';
 import { OpenModalConfirmService } from '../../services/open-modal-confirm.service';
-
-export interface vacancy {
-  id: number;
-  plate?: string;
-  clientName?: string;
-  model?: string;
-  type?: string;
-  color?: string;
-  startTime?: string;
-  status: string;
-  phoneNumber?: string;
-  expanded: boolean;
-}
+import { VagasService } from '../../services/vagas.service';
 
 @Component({
   selector: 'app-vacancies',
@@ -40,6 +28,7 @@ export interface vacancy {
 })
 export class VacanciesComponent implements OnInit {
   private openModalConfirmService = inject(OpenModalConfirmService);
+  private vagasService = inject(VagasService);
   private sessionStorage = sessionStorage;
   protected dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
@@ -54,7 +43,7 @@ export class VacanciesComponent implements OnInit {
   tableMode: boolean = false;
   isLoading: boolean = false;
 
-  vacancies: vacancy[] = [
+  vacancies: any[] = [
     { id: 1, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', plate: '-' },
     { id: 2, plate: 'TYZ-0J10', clientName: 'Gabriel Morais', model: 'HVR Preto', status: 'Ocupado', expanded: false, startTime: '20:44' },
     { id: 3, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', plate: '-' },
@@ -76,14 +65,11 @@ export class VacanciesComponent implements OnInit {
     { id: 19, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
     { id: 20, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' }
   ];
-  historyVacancies: any[] = [
-    {}
-  ]
 
   displayedColumns: string[] = [];
   legends: Array<{ value: string; name: string; view: boolean; checkbox: boolean; quantity1: boolean; quantity2: boolean; date: boolean }> = [
     {
-      value: 'id',
+      value: 'numero',
       name: 'Vaga',
       view: false,
       checkbox: false,
@@ -163,12 +149,35 @@ export class VacanciesComponent implements OnInit {
     this.enterpriseName = this.sessionStorage.getItem('enterpriseName') || 'Nome não definido';
     this.updateDateTime();
     this.timeInterval = setInterval(() => this.updateDateTime(), 1000);
-    this.displayedColumns = ['id', 'plate', 'type', 'model', 'color', 'clientName', 'startTime', 'status'];
-    // this.cursoService.listarCursos().subscribe((res: any) => {
-
-    // }, (error) => {
-    //   this.openSnackBar('Erro ao listar dados, tente novamente mais tarde.')
-    // });
+    this.displayedColumns = ['numero', 'plate', 'type', 'model', 'color', 'clientName', 'startTime', 'status'];
+    this.isLoading = true;
+    this.vagasService.listarVagas(this.id).subscribe({
+      next: (res: any[]) => {
+        this.vacancies = res.map((item: any) => {
+          return {
+            id: item.id_vaga,
+            numero: item.numero,
+            plate: item.veiculo ? item.veiculo.placa : '-',
+            type: item.tipo,
+            model: item.veiculo ? item.veiculo.modelo : '-',
+            color: item.veiculo ? item.veiculo.cor : '-',
+            clientName: item.veiculo ? item.veiculo.nome_cliente : '-',
+            startTime: item.veiculo ? item.veiculo.hora_entrada : '-',
+            status: item.status,
+            expanded: false
+          }
+        })
+      }, error: (error: any) => {
+        this.openModalConfirmService.openModalConfirm({
+          text: 'Erro ao carregar as vagas. Tente novamente mais tarde.',
+          hideCancelButton: true,
+          type: 'error'
+        });
+        this.isLoading = false;
+      }, complete: () => {
+        this.isLoading = false;
+      }
+    })
   }
 
   private updateDateTime(): void {
@@ -200,7 +209,7 @@ export class VacanciesComponent implements OnInit {
     // })
   }
 
-  vacancyClick(arg: number | vacancy): void {
+  vacancyClick(arg: any): void {
     if (typeof arg === 'number') {
       const i = arg;
       if (!this.vacancies[i]) return;
@@ -208,7 +217,7 @@ export class VacanciesComponent implements OnInit {
       return;
     }
 
-    const v = arg as vacancy;
+    const v = arg as any;
     const idx = this.vacancies.indexOf(v);
     if (idx === -1) return;
     this.vacancies[idx].expanded = !this.vacancies[idx].expanded;
@@ -223,13 +232,55 @@ export class VacanciesComponent implements OnInit {
   }
 
   openConfirmation(event: any): void {
-    console.log(event)
     this.openModalConfirmService.openModalConfirm({
-      text: `Tem certeza que deseja alterar o status dessa vaga de ${event.status} para ${event.status == 'Ocupado' ? 'Disponível' : 'Ocupado'}?`,
+      text: `Tem certeza que deseja alterar o status dessa vaga de ${event.status} para ${event.status == 'OCUPADA' ? 'Disponível' : 'Ocupado'}?`,
       subText: 'O registro da vaga ficará salvo e não poderá ser alterado.',
       type: 'danger',
     }).subscribe(confirm => {
-
+      if (confirm) {
+        this.isLoading = true;
+        if (event.status == 'OCUPADA') {
+          this.vagasService.desocuparVaga(this.id, event.id_vaga).subscribe({
+            next: (res: any) => {
+              this.isLoading = false;
+              this.openModalConfirmService.openModalConfirm({
+                text: 'Status da vaga alterado com sucesso!',
+                hideCancelButton: true,
+                type: 'success'
+              }).subscribe(() => {
+                window.location.reload();
+              });
+            }, error: (error: any) => {
+              this.isLoading = false;
+              this.openModalConfirmService.openModalConfirm({
+                text: 'Erro ao alterar status da vaga. Tente novamente mais tarde.',
+                hideCancelButton: true,
+                type: 'error'
+              });
+            }
+          });
+        } else {
+          this.vagasService.ocuparVaga(this.id, event.id_vaga, { placa: event.plate }).subscribe({
+            next: (res: any) => {
+              this.isLoading = false;
+              this.openModalConfirmService.openModalConfirm({
+                text: 'Status da vaga alterado com sucesso!',
+                hideCancelButton: true,
+                type: 'success'
+              }).subscribe(() => {
+                window.location.reload();
+              });
+            }, error: (error: any) => {
+              this.isLoading = false;
+              this.openModalConfirmService.openModalConfirm({
+                text: 'Erro ao alterar status da vaga. Tente novamente mais tarde.',
+                hideCancelButton: true,
+                type: 'error'
+              });
+            }
+          });
+        }
+      }
     })
   }
 

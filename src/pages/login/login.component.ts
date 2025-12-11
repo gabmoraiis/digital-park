@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { OpenModalConfirmService } from '../../services/open-modal-confirm.service';
 import { AuthService } from '../../services/auth.service';
-
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SpinnerComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -25,6 +25,7 @@ export class LoginComponent {
   showPassword: boolean = false;
   isLogin: boolean = true;
   signIn: boolean = false;
+  isLoading: boolean = false;
 
   isChangePassword: boolean = false;
 
@@ -50,6 +51,7 @@ export class LoginComponent {
         login: this.loginForm.get('username')?.value,
         password: this.loginForm.get('password')?.value
       }
+      this.isLoading = true;
       this.authService.loginPost(body).subscribe({
         next: (res: any) => {
           this.sessionStorage.setItem('nome', res.user.nome);
@@ -61,6 +63,10 @@ export class LoginComponent {
         error: (error: any) => {
           this.incorrectPassword = true;
           this.loginForm.markAllAsTouched();
+          this.isLoading = false;
+        },
+        complete: () => {
+          this.isLoading = false;
         }
       });
     } else {
@@ -76,6 +82,7 @@ export class LoginComponent {
         login: this.loginForm.get('username')?.value,
         senha: this.loginForm.get('password')?.value
       }
+      this.isLoading = true;
       this.authService.newRegisterPost(body).subscribe({
         next: (res: any) => {
           this.signInForm.reset();
@@ -90,12 +97,16 @@ export class LoginComponent {
         },
         error: (error: any) => {
           this.loginForm.markAllAsTouched();
-           this.openModalConfirmService.openModalConfirm({
+          this.openModalConfirmService.openModalConfirm({
             text: 'Erro ao realizar cadastro!',
             subText: 'Revise os dados e tente novamente mais tarde.',
             type: 'error',
             hideCancelButton: true,
           });
+          this.isLoading = false;
+        },
+        complete: () => {
+          this.isLoading = false;
         }
       });
     } else {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
@@ -11,7 +11,7 @@ import { SpinnerComponent } from '../../components/spinner/spinner.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AddVehiclesComponent } from './add-vehicle/add-vehicles.component';
 import { VeiculosService } from '../../services/veiculos.service';
-import { vacancy } from '../vacancies/vacancies.component';
+import { OpenModalConfirmService } from '../../services/open-modal-confirm.service';
 
 @Component({
   selector: 'app-vehicles',
@@ -29,6 +29,7 @@ import { vacancy } from '../vacancies/vacancies.component';
 })
 export class VehiclesComponent implements OnInit {
   displayedColumns: string[] = [];
+  private openModalConfirmService = inject(OpenModalConfirmService);
   legends: Array<{ value: string; name: string; view: boolean; checkbox: boolean; quantity1: boolean; quantity2: boolean; date: boolean }> = [
     {
       value: 'placa',
@@ -69,7 +70,7 @@ export class VehiclesComponent implements OnInit {
   ];
   isLoading: boolean = false;
   formFilter!: FormGroup;
-  vehiclesList: vacancy[] = [
+  vehiclesList: any[] = [
     { id: 1, plate: 'KDJ-4A72', type: '-', color: 'Vermelho', clientName: 'Rafael Azevedo', model: 'Honda Civic Preto', status: 'occupied', expanded: false, phoneNumber: '(11) 98241-6735' },
     { id: 2, plate: 'MTR-9F81', type: '-', color: 'Branco', clientName: 'Larissa Couto', model: 'Toyota Corolla Branco', status: 'occupied', expanded: false, phoneNumber: '(21) 99734-1208' },
     { id: 3, plate: 'PLQ-7C20', type: '-', color: 'Vermelho', clientName: 'Fernando Ribeiro', model: 'Volkswagen Polo Cinza', status: 'occupied', expanded: false, phoneNumber: '(31) 98922-4477' },
@@ -87,26 +88,44 @@ export class VehiclesComponent implements OnInit {
   constructor(
     protected dialog: MatDialog,
     private snackBar: MatSnackBar,
-    private veiculosService : VeiculosService,
+    private veiculosService: VeiculosService,
   ) { }
 
   ngOnInit(): void {
     this.displayedColumns = ['placa', 'modelo', 'cor', 'nome_cliente'];
-    this.veiculosService.listarVeiculos().subscribe((res: any) => {
-      this.vehiclesList = res;
-    }, (error) => {
-      this.openSnackBar('Erro ao listar veículos, tente novamente mais tarde.')
+    this.veiculosService.listarVeiculos().subscribe({
+      next: (res: any[]) => {
+        this.vehiclesList = res;
+      }, error: (error: any) => {
+        this.isLoading = false;
+        this.openModalConfirmService.openModalConfirm({
+          text: 'Erro ao carregar as vagas. Tente novamente mais tarde.',
+          hideCancelButton: true,
+          type: 'error'
+        });
+      }, complete: () => {
+        this.isLoading = false;
+      }
     });
   }
 
   handleDeleteClick(event: any): void {
     this.isLoading = true;
     this.veiculosService.excluirVeiculo(event.id).subscribe((item: any) => {
-      this.openSnackBar('Registro de veículo deletado com sucesso!')
+      this.openModalConfirmService.openModalConfirm({
+        text: 'Registro de veículo deletado com sucesso!',
+        hideCancelButton: true,
+        type: 'success'
+      });
       this.isLoading = false;
       window.location.reload();
     }, (error) => {
-      this.openSnackBar('Erro ao deletar registro de veículo, tente novamente mais tarde.')
+      this.isLoading = false;
+      this.openModalConfirmService.openModalConfirm({
+        text: 'Erro ao tentar deletar veículo. Tente novamente mais tarde.',
+        hideCancelButton: true,
+        type: 'error'
+      });
       this.isLoading = false;
     })
   }
@@ -114,20 +133,17 @@ export class VehiclesComponent implements OnInit {
   newVehicle(): void {
     this.dialog.open(AddVehiclesComponent, {
       data: {}
-    })
+    }).afterClosed().subscribe(() => {
+      window.location.reload();
+    });
   }
 
   editVehicle(event: any): void {
     event.actionType = 'edit';
     this.dialog.open(AddVehiclesComponent, {
       data: event
-    })
-  }
-
-  openSnackBar(content: string): void {
-    this.snackBar.open(content, 'Fechar', {
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
+    }).afterClosed().subscribe(() => {
+      window.location.reload();
     });
   }
 }

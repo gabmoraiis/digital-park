@@ -14,11 +14,11 @@ export class VagasService {
     return this.http.get<any[]>(`${this.apiUrl}/${id}/vagas`);
   }
 
-  liberarVaga(id: number, placa: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}/desocupar`, placa);
+  desocuparVaga(id_empresa: string, id_vaga: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id_empresa}/vagas/${id_vaga}/desocupar`, null);
   }
 
-  ocuparVaga(id: number): Observable<any> {
-     return this.http.put<any>(`${this.apiUrl}/${id}/ocupar`, null);
+  ocuparVaga(id_empresa: string, id_vaga: string, placa: any): Observable<any> {
+      return this.http.put<any>(`${this.apiUrl}/${id_empresa}/vagas/${id_vaga}/ocupar`, placa);
   }
 }
