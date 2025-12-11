@@ -48,7 +48,7 @@ export class ModalSelectCarComponent {
     this.veiculosService.listarVeiculos().subscribe({
       next: (res: any) => {
         res.map((item: any) => {
-          this.options.push({ label: `${item.modelo - item.cor - item.placa}`, value: item.placa })
+          this.options.push({name: `${item.modelo} - ${item.cor} - ${item.placa}`, value: item.placa})
         });
         this.isLoading = false;
       }, error: (error: any) => {
