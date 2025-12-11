@@ -49,7 +49,7 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const body = {
         login: this.loginForm.get('username')?.value,
-        password: this.loginForm.get('password')?.value
+        senha: this.loginForm.get('password')?.value
       }
       this.isLoading = true;
       this.authService.loginPost(body).subscribe({
@@ -109,6 +109,7 @@ export class LoginComponent {
           this.isLoading = false;
         }
       });
+      console.log(body)
     } else {
       this.loginForm.markAllAsTouched();
     }
