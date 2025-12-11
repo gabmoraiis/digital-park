@@ -32,7 +32,6 @@ export class AddVehiclesComponent {
     private fb: FormBuilder,
     protected dialog: MatDialog,
     private veiculosService: VeiculosService,
-    private snackBar: MatSnackBar,
   ) { }
 
   maxDate: any;

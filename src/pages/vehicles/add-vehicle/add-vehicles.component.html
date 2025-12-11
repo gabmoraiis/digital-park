@@ -20,14 +20,7 @@
                             Campo obrigatório
                         </span>
                     </div>
-                    <div class="form-input" style="margin-bottom: 20px;">
-                        <label for="type"> Tipo </label>
-                        <input name="type" type="text" placeholder="Carro" formControlName="type">
-                        <span class="error"
-                            *ngIf="formVehicle.get('type')?.invalid && formVehicle.get('type')?.touched">
-                            Campo obrigatório
-                        </span>
-                    </div>
+                    
                     <div class="form-input" style="margin-bottom: 20px;">
                         <label for="model"> Modelo </label>
                         <input name="model" type="text" placeholder="Renault Duster" formControlName="model">
@@ -51,14 +44,6 @@
                         <input name="clientName" type="clientName" placeholder="Gabriel Morais" formControlName="clientName">
                         <span class="error"
                             *ngIf="formVehicle.get('clientName')?.invalid && formVehicle.get('clientName')?.touched">
-                            Campo obrigatório
-                        </span>
-                    </div>
-                    <div class="form-input" style="margin-bottom: 20px;">
-                        <label for="phoneNumber"> phoneNumber </label>
-                        <input name="phoneNumber" type="text" placeholder="Ex: (77) 99999-9999" formControlName="phoneNumber" mask="(00) 00000-0000">
-                        <span class="error"
-                            *ngIf="formVehicle.get('phoneNumber')?.invalid && formVehicle.get('phoneNumber')?.touched">
                             Campo obrigatório
                         </span>
                     </div>
