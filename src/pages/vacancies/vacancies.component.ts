@@ -149,7 +149,7 @@ export class VacanciesComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.sessionStorage.getItem('id')!;
-    this.enterpriseName = this.sessionStorage.getItem('enterpriseName') || 'Nome não definido';
+    this.enterpriseName = this.sessionStorage.getItem('nome') || 'Nome não definido';
     this.updateDateTime();
     this.timeInterval = setInterval(() => this.updateDateTime(), 1000);
     this.displayedColumns = ['numero', 'plate', 'type', 'model', 'color', 'clientName', 'startTime', 'status'];
