@@ -5,10 +5,13 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validatio
 import { OpenModalConfirmService } from '../../services/open-modal-confirm.service';
 import { AuthService } from '../../services/auth.service';
 import { SpinnerComponent } from '../../components/spinner/spinner.component';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SpinnerComponent],
+  imports: [CommonModule, ReactiveFormsModule, SpinnerComponent, NgxMaskDirective],
+  providers: [provideNgxMask()],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -32,7 +35,7 @@ export class LoginComponent {
   loginForm: FormGroup = this.fb.group({
     username: ['', Validators.required],
     password: ['', Validators.required],
-    socialReason: ['', Validators.required]
+    socialReason: ['']
   });
 
   ngOnInit() {
@@ -155,6 +158,13 @@ export class LoginComponent {
   }
 
   toggleShowSignIn(): void {
+    if (!this.signIn) {
+      this.loginForm.get('socialReason')?.setValidators(Validators.required);
+    } else {
+      this.loginForm.get('socialReason')?.clearValidators();
+      this.loginForm.get('socialReason')?.setValue('');
+    }
+
     this.signIn = !this.signIn;
     this.isLogin = false;
   }
