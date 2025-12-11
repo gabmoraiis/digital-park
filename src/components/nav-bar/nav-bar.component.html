@@ -4,7 +4,7 @@
       <img src="../../assets/images/digital-park-logo.png" alt="Digital Park">
     </div>
     <div class="toggle-button"
-      [ngStyle]="{ margin: isToggle ? '0 0 0 0' : '0 25% 0 0', padding: isToggle ? '10px' : ''}">
+      [ngStyle]="{ margin: isToggle ? '0' : '0 25% 0 0', padding: isToggle ? '10px' : '0', 'align-items': isToggle ? 'center' : 'flex-start', 'margin-top': isToggle ? '0' : '37px', transition: 'all 0.5s ease-in-out' }">
       <button (click)="toggleSidenav()">
         <svg [ngStyle]="{ transform: isToggle ? '' : 'rotate(-180deg)',  transition: 'transform 0.3s ease-in-out' }"
           class="material-icons" width="33" height="33" viewBox="0 0 33 33" fill="none"

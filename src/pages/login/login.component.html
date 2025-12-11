@@ -1,0 +1,115 @@
+<div class="login-content">
+  <div class="block-left"> </div>
+
+  @if (isLogin) {
+    <div class="block-right">
+      <form [formGroup]="loginForm" (ngSubmit)="submitLoginForm()" class="login-form">
+        <h2> Que bom que voltou! </h2>
+        <span> Entre com CNPJ e senha para gerenciar o seu estacionamento </span>
+        <div class="form-group" [ngClass]="{ focused: usernameFocused }">
+          <label for="username" class="form-label"> CNPJ </label>
+          <input
+            formControlName="username"
+            type="text"
+            name="username"
+            class="form-input"
+            placeholder="Digite seu CNPJ"
+            (focus)="onFocus('username')"
+            (blur)="onBlur('username')"
+            style="margin-bottom: 15px;"
+          />
+        </div>
+        <div class="form-group" [ngClass]="{ focused: passwordFocused }">
+          <label for="password" class="form-label"> Senha </label>
+          <input
+            formControlName="password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            class="form-input"
+            placeholder="Digite sua senha"
+            (focus)="onFocus('password')"
+          />
+          <img
+            [src]="showPassword ? '../../../assets/images/olho_nao_exibe.png' : '../../../assets/images/olho_exibe.png'"
+            class="toggle-password-icon"
+            (click)="toggleShowPassword()"
+          />
+        </div>
+
+        @if(incorrectPassword){
+        <div class="warning">
+          <p> Usuário ou senha incorretos </p>
+        </div>
+        }
+
+        <div class="buttons-container">
+          <button type="submit" class="send-button"> Entrar </button>
+          <button type="submit" class="signin-button" (click)="toggleShowSignIn()"> Criar Conta </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (signIn) {
+    <div class="block-right">
+      <form [formGroup]="signInForm" (ngSubmit)="submitSignInForm()" class="login-form">
+        <h2> É ótimo te ter aqui! </h2>
+        <span> Cadastre seu CNPJ para gerenciar seu estacionamento </span>
+        <div class="form-group" [ngClass]="{ focused: usernameFocused }">
+          <label for="socialReason" class="form-label"> CNPJ </label>
+          <input
+            formControlName="socialReason"
+            type="text"
+            name="socialReason"
+            class="form-input"
+            placeholder="Digite seu CNPJ"
+            (focus)="onFocus('socialReason')"
+            (blur)="onBlur('socialReason')"
+            style="margin-bottom: 15px;"
+          />
+        </div>
+        <div class="form-group" [ngClass]="{ focused: usernameFocused }">
+          <label for="username" class="form-label"> CNPJ </label>
+          <input
+            formControlName="username"
+            type="text"
+            name="username"
+            class="form-input"
+            placeholder="Digite seu CNPJ"
+            (focus)="onFocus('username')"
+            (blur)="onBlur('username')"
+            style="margin-bottom: 15px;"
+          />
+        </div>
+        <div class="form-group" [ngClass]="{ focused: passwordFocused }">
+          <label for="password" class="form-label"> Senha </label>
+          <input
+            formControlName="password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            class="form-input"
+            placeholder="Digite sua senha"
+            (focus)="onFocus('password')"
+          />
+          <img
+            [src]="showPassword ? '../../../assets/images/olho_nao_exibe.png' : '../../../assets/images/olho_exibe.png'"
+            class="toggle-password-icon"
+            (click)="toggleShowPassword()"
+          />
+        </div>
+
+        @if(incorrectPassword){
+        <div class="warning">
+          <p> Usuário ou senha incorretos </p>
+        </div>
+        }
+
+        <div class="buttons-container">
+          <button type="submit" class="send-button" (click)="submitSignInForm()"> Enviar </button>
+          <button type="submit" class="signin-button" (click)="handleInitialLoginPage()"> Voltar </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>
+

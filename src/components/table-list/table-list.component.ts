@@ -39,18 +39,10 @@ export class TableListComponent implements AfterViewInit, OnInit, OnChanges {
 
   @Input() dataList: Array<any> = [];
   @Input() actions: boolean = false;
-  @Input() requestButton: boolean = false;
+  @Input() refreshButton: boolean = false;
   @Input() editButton: boolean = false;
   @Input() deleteButton: boolean = false;
-  @Input() viewPermissionButton: boolean = false;
-  @Input() denyPermissionButton: boolean = false;
-  @Input() aprovePermissionButton: boolean = false;
   @Input() viewButton: boolean = false;
-  @Input() viewButton2: boolean = false;
-  @Input() viewCheckbox: boolean = false;
-  @Input() viewQuantity1: boolean = false;
-  @Input() viewQuantity2: boolean = false;
-  @Input() viewDate: boolean = false;
   @Input() displayedColumns: string[] = [];
   @Input() legends: Array<{
     value: string;
@@ -69,14 +61,10 @@ export class TableListComponent implements AfterViewInit, OnInit, OnChanges {
   @Input() isConfirmed: boolean = false;
   @Input() permissionStatus: string = '';
 
-  @Output() handleRequestClick = new EventEmitter();
+  @Output() handleRefreshClick = new EventEmitter();
   @Output() handleEditClick = new EventEmitter();
   @Output() handleViewClick = new EventEmitter();
-  @Output() handleViewClick2 = new EventEmitter();
   @Output() handleDeleteClick = new EventEmitter();
-  @Output() handleViewPermission = new EventEmitter();
-  @Output() handleDenyPermission = new EventEmitter();
-  @Output() handleAprovePermission = new EventEmitter();
   @Output() paginate = new EventEmitter();
   @Output() dataChanged = new EventEmitter<{ data: any[] }>();
 
@@ -100,14 +88,7 @@ export class TableListComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['dataList']) {
-      this.dataList = this.dataList.map((item) => ({
-        ...item,
-        quantityEnabled: item.quantityEnabled || false,
-        quantity: item.quantity,
-      }));
-      this.dataSource = new MatTableDataSource(this.dataList);
-    }
+    this.dataSource = new MatTableDataSource(this.dataList);
   }
 
   ngAfterViewInit() {
@@ -119,47 +100,15 @@ export class TableListComponent implements AfterViewInit, OnInit, OnChanges {
     return legend?.name ?? '';
   }
 
-  checkViewButton(key: string) {
-    return this.legends.some(
-      (item) => item.value === key && item.view === true
-    );
-  }
-
-  checkViewButton2(key: string) {
-    return this.legends.some(
-      (item) => item.value === key && item.view2 === true
-    );
-  }
-
-  checkViewCheckbox(key: string) {
-    return this.legends.some(
-      (item) => item.value === key && item.checkbox === true
-    );
-  }
-
-  checkViewQuantity1(key: string) {
-    return this.legends.some(
-      (item) => item.value === key && item.quantity1 === true
-    );
-  }
-
-  checkViewQuantity2(key: string) {
-    return this.legends.some(
-      (item) => item.value === key && item.quantity2 === true
-    );
-  }
-
-  checkViewDate(key: string) {
-    return this.legends.some(
-      (item) => item.value === key && item.date === true
-    );
-  }
-
-  checkColorQuantityColumn(column: string) {
-    if (column == 'actualAmount') {
-      return { color: 'green', 'font-weight': 'bold' };
-    } else if (column == 'totalAmountDeath') {
-      return { color: 'red', 'font-weight': 'bold' };
+  checkColor(column: string, row: any) {
+    if (column == 'status' && row.status) {
+      if (row.status == 'Disponível') {
+        return { color: 'green', 'font-weight': 'bold' };
+      } else if (row.status == 'Ocupado') {
+        return { color: 'red', 'font-weight': 'bold' };
+      } else {
+        return { color: 'black' };
+      }
     } else {
       return { color: 'black' };
     }
@@ -177,16 +126,8 @@ export class TableListComponent implements AfterViewInit, OnInit, OnChanges {
     this.paginate.emit(event);
   }
 
-  handleRequestButtonClick(element: any): void {
-    this.handleRequestClick.emit(element);
-  }
-
-  handleViewButtonClick(element: any): void {
-    this.handleViewClick.emit(element);
-  }
-
-  handleViewButtonClick2(element: any): void {
-    this.handleViewClick2.emit(element);
+  handleRefreshButtonClick(element: any): void {
+    this.handleRefreshClick.emit(element);
   }
 
   handleEditButtonClick(element: any): void {
@@ -195,18 +136,6 @@ export class TableListComponent implements AfterViewInit, OnInit, OnChanges {
 
   handleDeleteButtonClick(element: any): void {
     this.handleDeleteClick.emit(element);
-  }
-
-  handleViewPermissionsButtonClick(element: any): void {
-    this.handleViewPermission.emit(element);
-  }
-
-  handleDenyPermissionsButtonClick(element: any): void {
-    this.handleDenyPermission.emit(element);
-  }
-
-  handleAprovePermissionsButtonClick(element: any): void {
-    this.handleAprovePermission.emit(element);
   }
 
   onCheckboxChange(row: any, event: any) {

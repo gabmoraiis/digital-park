@@ -1,11 +1,29 @@
 .panel {
   height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: row;
   background-color: #F4F4F4;
 
   main {
     width: 100%;
+    padding: 50px 30px;
     overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+      border: none;
+      padding: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #D0D0D0;
+      border-radius: 5px;
+    }
   }
 }

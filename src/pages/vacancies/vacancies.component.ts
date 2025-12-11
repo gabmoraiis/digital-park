@@ -1,15 +1,15 @@
 
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { SpinnerComponent } from '../../components/spinner/spinner.component';
 import { TableListComponent } from '../../components/table-list/table-list.component';
-import { CursoService } from '../../services/curso.service';
 import { HttpClientModule } from '@angular/common/http';
+import { OpenModalConfirmService } from '../../services/open-modal-confirm.service';
 
 export interface vacancy {
   id: number;
@@ -19,7 +19,7 @@ export interface vacancy {
   type?: string;
   color?: string;
   startTime?: string;
-  status: 'available' | 'occupied';
+  status: string;
   phoneNumber?: string;
   expanded: boolean;
 }
@@ -34,40 +34,51 @@ export interface vacancy {
     HttpClientModule,
     TableListComponent
   ],
-  providers: [CursoService],
+  providers: [],
   templateUrl: './vacancies.component.html',
   styleUrl: './vacancies.component.scss'
 })
 export class VacanciesComponent implements OnInit {
-  enterpriseName: string = 'Shopping Boa Vista'
+  private openModalConfirmService = inject(OpenModalConfirmService);
+  private sessionStorage = sessionStorage;
+  protected dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+
   day: number | string = '';
   month: string = '';
   year: number | string = '';
   time: string = '';
-  vacancies: vacancy[] = [
-    { id: 1, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 2, plate: 'TYZ-0J10', clientName: 'Gabriel Morais', model: 'HVR Preto', status: 'occupied', expanded: false },
-    { id: 3, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 4, plate: 'ZRZ-1L99', clientName: 'Gustavo Santos', model: 'HVR Azul', status: 'occupied', expanded: false },
-    { id: 5, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 6, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 7, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 8, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 9, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 10, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 11, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 12, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 13, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 14, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 15, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 16, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 17, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 18, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 19, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
-    { id: 20, status: 'available', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' }
-  ];
-  tableMode: boolean = false;
   timeInterval: any;
+  enterpriseName: string = '';
+  id: string = '';
+  tableMode: boolean = false;
+  isLoading: boolean = false;
+
+  vacancies: vacancy[] = [
+    { id: 1, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', plate: '-' },
+    { id: 2, plate: 'TYZ-0J10', clientName: 'Gabriel Morais', model: 'HVR Preto', status: 'Ocupado', expanded: false, startTime: '20:44' },
+    { id: 3, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', plate: '-' },
+    { id: 4, plate: 'ZRZ-1L99', clientName: 'Gustavo Santos', model: 'HVR Azul', status: 'Ocupado', expanded: false, startTime: '18:16' },
+    { id: 5, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 6, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 7, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 8, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 9, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 10, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 11, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 12, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 13, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 14, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 15, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 16, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 17, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 18, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 19, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' },
+    { id: 20, status: 'Disponível', expanded: false, clientName: '-', model: '-', type: '-', color: '-', startTime: '-', plate: '-' }
+  ];
+  historyVacancies: any[] = [
+    {}
+  ]
 
   displayedColumns: string[] = [];
   legends: Array<{ value: string; name: string; view: boolean; checkbox: boolean; quantity1: boolean; quantity2: boolean; date: boolean }> = [
@@ -144,27 +155,20 @@ export class VacanciesComponent implements OnInit {
       date: false
     },
   ];
-  isLoading: boolean = false;
 
   @ViewChild('moreData', { static: false }) moreData!: ElementRef;
   @ViewChild('vacancyIntro', { static: false }) vacancyIntro!: ElementRef;
 
-  constructor(
-    protected dialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private cursoService: CursoService
-  ) { }
-
   ngOnInit(): void {
+    this.enterpriseName = this.sessionStorage.getItem('enterpriseName') || 'Nome não definido';
     this.updateDateTime();
     this.timeInterval = setInterval(() => this.updateDateTime(), 1000);
     this.displayedColumns = ['id', 'plate', 'type', 'model', 'color', 'clientName', 'startTime', 'status'];
-    this.cursoService.listarCursos().subscribe((res: any) => {
+    // this.cursoService.listarCursos().subscribe((res: any) => {
 
-    }, (error) => {
-      this.openSnackBar('Erro ao listar dados, tente novamente mais tarde.')
-    });
-
+    // }, (error) => {
+    //   this.openSnackBar('Erro ao listar dados, tente novamente mais tarde.')
+    // });
   }
 
   private updateDateTime(): void {
@@ -186,14 +190,14 @@ export class VacanciesComponent implements OnInit {
 
   handleDeleteClick(event: any): void {
     this.isLoading = true;
-    this.cursoService.excluirCurso(event.id).subscribe((item: any) => {
-      this.openSnackBar('Curso deletado com sucesso!')
-      this.isLoading = false;
-      window.location.reload();
-    }, (error) => {
-      this.openSnackBar('Erro ao deletar curso, tente novamente mais tarde.')
-      this.isLoading = false;
-    })
+    // this.cursoService.excluirCurso(event.id).subscribe((item: any) => {
+    //   this.openSnackBar('Curso deletado com sucesso!')
+    //   this.isLoading = false;
+    //   window.location.reload();
+    // }, (error) => {
+    //   this.openSnackBar('Erro ao deletar curso, tente novamente mais tarde.')
+    //   this.isLoading = false;
+    // })
   }
 
   vacancyClick(arg: number | vacancy): void {
@@ -210,16 +214,27 @@ export class VacanciesComponent implements OnInit {
     this.vacancies[idx].expanded = !this.vacancies[idx].expanded;
   }
 
-  cancelButton(index: number): void {
+  cancelButton(index: number, data: any): void {
 
   }
 
-  confirmButton(index: number): void {
+  confirmButton(index: number, data: any): void {
+    this.openConfirmation(data);
+  }
 
+  openConfirmation(event: any): void {
+    console.log(event)
+    this.openModalConfirmService.openModalConfirm({
+      text: `Tem certeza que deseja alterar o status dessa vaga de ${event.status} para ${event.status == 'Ocupado' ? 'Disponível' : 'Ocupado'}?`,
+      subText: 'O registro da vaga ficará salvo e não poderá ser alterado.',
+      type: 'danger',
+    }).subscribe(confirm => {
+
+    })
   }
 
   changeViewMode(mode: 'frame' | 'table'): void {
-    if(mode == 'frame') {
+    if (mode == 'frame') {
       this.tableMode = false;
     } else {
       this.tableMode = true;

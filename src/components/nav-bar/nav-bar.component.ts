@@ -16,7 +16,7 @@ import { MatListModule } from '@angular/material/list';
 })
 
 export class NavBarComponent implements OnInit{
-  isToggle: boolean = true;
+  isToggle: boolean = false;
 
   constructor() {}
 

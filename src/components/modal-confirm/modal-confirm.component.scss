@@ -1,0 +1,50 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background: var(--light);
+    min-height: 250px;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    min-width: 100px;
+    border: black double 2px;
+    
+    .texts-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 10px;
+    }
+
+    img {
+        width: clamp(42px, 60px, 3.125vw);
+    }
+
+    p {
+        font-size: var(--font-14);
+        color: #53565A;
+        font-weight: 400;
+    }
+
+    h4 {
+        font-size: var(--font-16);
+        color: #53565A;
+        font-weight: 600;
+    }
+
+    .buttons-area {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+
+        .button {
+            border-radius: 4px;
+            color: white;
+            padding: 4px 12px;
+            border: none;
+            font-size: var(--font-14);
+        }
+    }
+}
