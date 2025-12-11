@@ -52,7 +52,7 @@
 
   @if (signIn) {
     <div class="block-right">
-      <form [formGroup]="signInForm" (ngSubmit)="submitSignInForm()" class="login-form">
+      <form [formGroup]="loginForm" class="login-form">
         <h2> É ótimo te ter aqui! </h2>
         <span> Cadastre seu CNPJ para gerenciar seu estacionamento </span>
         <div class="form-group" [ngClass]="{ focused: usernameFocused }">

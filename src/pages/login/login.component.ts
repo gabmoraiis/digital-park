@@ -32,12 +32,7 @@ export class LoginComponent {
   loginForm: FormGroup = this.fb.group({
     username: ['', Validators.required],
     password: ['', Validators.required],
-  });
-
-  signInForm: FormGroup = this.fb.group({
-    socialReason: ['', Validators.required],
-    username: ['', Validators.required],
-    password: ['', Validators.required],
+    socialReason: ['', Validators.required]
   });
 
   ngOnInit() {
@@ -76,16 +71,16 @@ export class LoginComponent {
 
   submitSignInForm(): void {
     this.incorrectPassword = false;
-    if (this.signInForm.valid) {
+    if (this.loginForm.valid) {
       const body = {
-        nome: this.signInForm.get('socialReason')?.value,
+        nome: this.loginForm.get('socialReason')?.value,
         login: this.loginForm.get('username')?.value,
         senha: this.loginForm.get('password')?.value
       }
       this.isLoading = true;
       this.authService.newRegisterPost(body).subscribe({
         next: (res: any) => {
-          this.signInForm.reset();
+          this.loginForm.reset();
           this.signIn = false;
           this.isLogin = true;
           this.openModalConfirmService.openModalConfirm({
@@ -161,12 +156,10 @@ export class LoginComponent {
 
   toggleShowSignIn(): void {
     this.signIn = !this.signIn;
-    this.isChangePassword = false;
     this.isLogin = false;
   }
 
   handleInitialLoginPage(): void {
-    this.isChangePassword = false;
     this.signIn = false;
     this.isLogin = true;
   }
