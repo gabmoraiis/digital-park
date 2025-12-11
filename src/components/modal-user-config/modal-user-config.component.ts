@@ -41,7 +41,7 @@ export class ModalUserConfigComponent {
     cnpj: [{ value: '', disabled: true }, Validators.required],
     address: ['', Validators.required],
     vacanciesNumber: ['', Validators.required],
-    hourValue: ['', Validators.required],
+    hourValue: [0, Validators.required],
     phoneNumber: ['', Validators.required]
   });
 
@@ -54,7 +54,7 @@ export class ModalUserConfigComponent {
           cnpj: res.cnpj,
           address: res.endereco,
           vacanciesNumber: res.numero_vagas,
-          hourValue: res.valor_hora,
+          hourValue: Number(res.valor_hora),
           phoneNumber: res.telefone
         });
       }
