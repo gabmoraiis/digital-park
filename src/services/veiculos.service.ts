@@ -14,7 +14,7 @@ export class VeiculosService {
 
   constructor(private http: HttpClient) {
     this.storage = window.sessionStorage;
-    this.token = this.storage.getItem('token')!;
+    this.token = `Bearer ${this.storage.getItem('token')!}`;
     this.httpOptions = {
       headers: new HttpHeaders({
         Authorization: this.token,
