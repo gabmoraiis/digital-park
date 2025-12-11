@@ -50,12 +50,12 @@ export class ModalUserConfigComponent {
     this.companyService.listarEmpresas(this.id).subscribe({
       next: (res: any) => {
         this.formEnterprise.patchValue({
-          socialReason: res[0].nome,
-          cnpj: res[0].cnpj,
-          address: res[0].endereco,
-          vacanciesNumber: res[0].numero_vagas,
-          hourValue: res[0].valor_hora,
-          phoneNumber: res[0].telefone
+          socialReason: res.nome,
+          cnpj: res.cnpj,
+          address: res.endereco,
+          vacanciesNumber: res.numero_vagas,
+          hourValue: res.valor_hora,
+          phoneNumber: res.telefone
         });
       }
     })
