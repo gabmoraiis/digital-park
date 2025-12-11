@@ -146,6 +146,7 @@ export class VacanciesComponent implements OnInit {
   @ViewChild('vacancyIntro', { static: false }) vacancyIntro!: ElementRef;
 
   ngOnInit(): void {
+    this.id = this.sessionStorage.getItem('id')!;
     this.enterpriseName = this.sessionStorage.getItem('enterpriseName') || 'Nome não definido';
     this.updateDateTime();
     this.timeInterval = setInterval(() => this.updateDateTime(), 1000);
