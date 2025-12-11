@@ -235,36 +235,16 @@ export class VacanciesComponent implements OnInit {
   }
 
   openConfirmation(event: any): void {
-    const ref = this.dialog.open(ModalSelectCarComponent);
-    ref.afterClosed().subscribe((plate: string | undefined) => {
-      // se o modal foi fechado sem seleção, não faz nada
-      if (!plate) return;
-      this.selectedPlate = plate;
-      this.isLoading = true;
+    if (event.status != 'OCUPADA') {
+      const ref = this.dialog.open(ModalSelectCarComponent);
+      ref.afterClosed().subscribe((plate: string | undefined) => {
+        // se o modal foi fechado sem seleção, não faz nada
+        if (!plate) return;
+        this.selectedPlate = plate;
+        this.isLoading = true;
 
-      if (event.status === 'OCUPADA') {
-        // desocupar vaga (não precisa da placa)
-        this.vagasService.desocuparVaga(this.id, event.id_vaga).subscribe({
-          next: () => {
-            this.isLoading = false;
-            this.openModalConfirmService.openModalConfirm({
-              text: 'Status da vaga alterado com sucesso!',
-              hideCancelButton: true,
-              type: 'success'
-            }).subscribe(() => window.location.reload());
-          },
-          error: () => {
-            this.isLoading = false;
-            this.openModalConfirmService.openModalConfirm({
-              text: 'Erro ao alterar status da vaga. Tente novamente mais tarde.',
-              hideCancelButton: true,
-              type: 'error'
-            });
-          }
-        });
-      } else {
         // ocupar vaga usando a placa retornada pelo modal
-        this.vagasService.ocuparVaga(this.id, event.id_vaga, { placa: this.selectedPlate }).subscribe({
+        this.vagasService.ocuparVaga(this.id, event.id, { placa: this.selectedPlate }).subscribe({
           next: () => {
             this.isLoading = false;
             this.openModalConfirmService.openModalConfirm({
@@ -282,8 +262,28 @@ export class VacanciesComponent implements OnInit {
             });
           }
         });
-      }
-    });
+      });
+    } else {
+      // desocupar vaga (não precisa da placa)
+      this.vagasService.desocuparVaga(this.id, event.id).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.openModalConfirmService.openModalConfirm({
+            text: 'Status da vaga alterado com sucesso!',
+            hideCancelButton: true,
+            type: 'success'
+          }).subscribe(() => window.location.reload());
+        },
+        error: () => {
+          this.isLoading = false;
+          this.openModalConfirmService.openModalConfirm({
+            text: 'Erro ao alterar status da vaga. Tente novamente mais tarde.',
+            hideCancelButton: true,
+            type: 'error'
+          });
+        }
+      });
+    }
   }
 
   changeViewMode(mode: 'frame' | 'table'): void {
