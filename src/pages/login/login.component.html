@@ -3,7 +3,7 @@
 
   @if (isLogin) {
     <div class="block-right">
-      <form [formGroup]="loginForm" (ngSubmit)="submitLoginForm()" class="login-form">
+      <form [formGroup]="loginForm" class="login-form">
         <h2> Que bom que voltou! </h2>
         <span> Entre com CNPJ e senha para gerenciar o seu estacionamento </span>
         <div class="form-group" [ngClass]="{ focused: usernameFocused }">
@@ -43,7 +43,7 @@
         }
 
         <div class="buttons-container">
-          <button type="submit" class="send-button"> Entrar </button>
+          <button type="submit" class="send-button" (click)="submitLoginForm()"> Entrar </button>
           <button type="submit" class="signin-button" (click)="toggleShowSignIn()"> Criar Conta </button>
         </div>
       </form>
