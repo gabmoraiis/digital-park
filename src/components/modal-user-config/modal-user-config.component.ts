@@ -40,7 +40,7 @@ export class ModalUserConfigComponent {
     cnpj: [{ value: '', disabled: true }, Validators.required],
     address: ['', Validators.required],
     vacanciesNumber: ['', Validators.required],
-    hourValue: ['', Validators.required],
+    hourValue: [''],
     phoneNumber: ['', Validators.required]
   });
 
