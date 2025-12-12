@@ -58,7 +58,7 @@
 
                     <div class="form-input" style="margin-bottom: 20px;">
                         <label for="hourValue"> Valor por Hora Estacionada </label>
-                        <input name="hourValue" type="text" placeholder="Ex: 5,00 R$" formControlName="hourValue" mask="0,00">
+                        <input name="hourValue" type="text" placeholder="Ex: 5,00 R$" formControlName="hourValue" mask="0,00 | 00,00 | 000,00">
                         <span class="error" *ngIf="formEnterprise.get('hourValue')?.invalid && formEnterprise.get('hourValue')?.touched">
                             Campo obrigatório
                         </span>
