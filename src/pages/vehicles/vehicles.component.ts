@@ -111,7 +111,7 @@ export class VehiclesComponent implements OnInit {
 
   handleDeleteClick(event: any): void {
     this.isLoading = true;
-    this.veiculosService.excluirVeiculo(event.id).subscribe((item: any) => {
+    this.veiculosService.excluirVeiculo(Number(event.id)).subscribe((item: any) => {
       this.openModalConfirmService.openModalConfirm({
         text: 'Registro de veículo deletado com sucesso!',
         hideCancelButton: true,
