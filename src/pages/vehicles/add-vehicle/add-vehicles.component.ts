@@ -46,10 +46,10 @@ export class AddVehiclesComponent {
 
   ngOnInit(): void {
     if (this.data.title = 'Editar Veículo') {
-      this.formVehicle.get('plate')?.setValue(this.data.placa);
-      this.formVehicle.get('model')?.setValue(this.data.model);
-      this.formVehicle.get('color')?.setValue(this.data.color);
-      this.formVehicle.get('clientName')?.setValue(this.data.clientName);
+      this.formVehicle.get('plate')?.setValue(this.data.event.placa);
+      this.formVehicle.get('model')?.setValue(this.data.event.modelo);
+      this.formVehicle.get('color')?.setValue(this.data.event.cor);
+      this.formVehicle.get('clientName')?.setValue(this.data.nome_cliente);
     }
   }
 
