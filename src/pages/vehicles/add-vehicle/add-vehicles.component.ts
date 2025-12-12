@@ -59,6 +59,7 @@ export class AddVehiclesComponent {
 
   submitForm(): void {
     if (this.data.title === 'Novo Veículo') {
+      if (this.formVehicle.valid) {
         this.body = {
           placa: this.formVehicle.get('plate')?.value!,
           modelo: this.formVehicle.get('model')?.value!,
@@ -93,6 +94,8 @@ export class AddVehiclesComponent {
           this.isLoading = false;
           window.location.reload();
         });
+      }
+
     } else if (this.data.title === 'Editar Veículo') {
       if (this.formVehicle.valid) {
         this.body = {
@@ -102,7 +105,7 @@ export class AddVehiclesComponent {
           nome_cliente: this.formVehicle.get('clientName')?.value!
         }
         this.isLoading = true;
-        this.veiculosService.editarVeiculo(this.data.id, this.body!).subscribe((response: any) => {
+        this.veiculosService.editarVeiculo(this.data.event.id, this.body!).subscribe((response: any) => {
           this.isLoading = false;
           this.openModalConfirmService.openModalConfirm({
             text: 'Veículo editado com sucesso!',

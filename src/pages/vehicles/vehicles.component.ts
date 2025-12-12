@@ -132,7 +132,9 @@ export class VehiclesComponent implements OnInit {
 
   newVehicle(): void {
     this.dialog.open(AddVehiclesComponent, {
-      data: {}
+      data: {
+        title: 'Novo Veículo'
+      }
     }).afterClosed().subscribe(() => {
       window.location.reload();
     });
@@ -141,7 +143,10 @@ export class VehiclesComponent implements OnInit {
   editVehicle(event: any): void {
     event.actionType = 'edit';
     this.dialog.open(AddVehiclesComponent, {
-      data: event
+      data: {
+        title: 'Editar Veículo',
+        event: event
+      } 
     }).afterClosed().subscribe(() => {
       window.location.reload();
     });
