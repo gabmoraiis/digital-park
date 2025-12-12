@@ -49,7 +49,7 @@ export class AddVehiclesComponent {
       this.formVehicle.get('plate')?.setValue(this.data.event.placa);
       this.formVehicle.get('model')?.setValue(this.data.event.modelo);
       this.formVehicle.get('color')?.setValue(this.data.event.cor);
-      this.formVehicle.get('clientName')?.setValue(this.data.nome_cliente);
+      this.formVehicle.get('clientName')?.setValue(this.data.event.nome_cliente);
     }
   }
 
