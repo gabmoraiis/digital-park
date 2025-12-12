@@ -40,7 +40,7 @@ export class ModalUserConfigComponent {
     cnpj: [{ value: '', disabled: true }, Validators.required],
     address: ['', Validators.required],
     vacanciesNumber: ['', Validators.required],
-    hourValue: [0, Validators.required],
+    hourValue: ['', Validators.required],
     phoneNumber: ['', Validators.required]
   });
 
@@ -53,7 +53,7 @@ export class ModalUserConfigComponent {
           cnpj: res.cnpj,
           address: res.endereco,
           vacanciesNumber: res.numero_vagas,
-          hourValue: Number(res.valor_hora),
+          hourValue: res.valor_hora,
           phoneNumber: res.telefone
         });
       }
@@ -72,7 +72,7 @@ export class ModalUserConfigComponent {
         endereco: this.formEnterprise.get('address')?.value,
         telefone: this.formEnterprise.get('phoneNumber')?.value,
         numero_vagas: this.formEnterprise.get('vacanciesNumber')?.value,
-        valor_hora: this.formEnterprise.get('hourValue')?.value
+        valor_hora: Number(this.formEnterprise.get('hourValue')?.value)
       }
       this.isLoading = true;
       this.companyService.editarEmpresa(this.id, this.body).subscribe({
