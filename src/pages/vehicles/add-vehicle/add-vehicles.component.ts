@@ -59,7 +59,6 @@ export class AddVehiclesComponent {
 
   submitForm(): void {
     if (this.data.title === 'Novo Veículo') {
-      if (this.formVehicle.valid) {
         this.body = {
           placa: this.formVehicle.get('plate')?.value!,
           modelo: this.formVehicle.get('model')?.value!,
@@ -93,11 +92,8 @@ export class AddVehiclesComponent {
         }, () => {
           this.isLoading = false;
           window.location.reload();
-        })
-      } else {
-        this.formVehicle.markAllAsTouched();
-      }
-    } else if (this.data.title === 'Editar Aluno') {
+        });
+    } else if (this.data.title === 'Editar Veículo') {
       if (this.formVehicle.valid) {
         this.body = {
           placa: this.formVehicle.get('plate')?.value!,
