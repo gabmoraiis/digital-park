@@ -45,7 +45,7 @@ export class AddVehiclesComponent {
   });
 
   ngOnInit(): void {
-    if (this.data.title = 'Editar Veículo') {
+    if (this.data.title == 'Editar Veículo') {
       this.formVehicle.get('plate')?.setValue(this.data.event.placa);
       this.formVehicle.get('model')?.setValue(this.data.event.modelo);
       this.formVehicle.get('color')?.setValue(this.data.event.cor);
@@ -58,7 +58,7 @@ export class AddVehiclesComponent {
   }
 
   submitForm(): void {
-    if (this.data.title === 'Novo Veículo') {
+    if (this.data.title === 'Cadastrar Veículo') {
       if (this.formVehicle.valid) {
         this.body = {
           placa: this.formVehicle.get('plate')?.value!,

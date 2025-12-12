@@ -120,7 +120,7 @@ export class VehiclesComponent implements OnInit {
   newVehicle(): void {
     this.dialog.open(AddVehiclesComponent, {
       data: {
-        title: 'Novo Veículo'
+        title: 'Cadastrar Veículo'
       }
     }).afterClosed().subscribe(() => {
       window.location.reload();
