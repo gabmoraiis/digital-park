@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SpinnerComponent } from '../../components/spinner/spinner.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
@@ -28,6 +28,7 @@ export class ModalUserConfigComponent {
   private fb = inject(FormBuilder);
   readonly openModalConfirmService = inject(OpenModalConfirmService);
   protected dialog = inject(MatDialog);
+  private dialogRef = inject(MatDialogRef);
   public data = inject(MAT_DIALOG_DATA);
 
   id: string = '';
@@ -83,7 +84,7 @@ export class ModalUserConfigComponent {
             type: 'success',
             hideCancelButton: true,
           });
-          this.dialog.closeAll();
+          this.dialogRef.close();
         },
         error: (error: any) => {
           this.openModalConfirmService.openModalConfirm({
